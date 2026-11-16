@@ -11,6 +11,7 @@ loading all reports into memory.
 | --- | --- |
 | [extract_data2_features.py](./extract_data2_features.py) | Streams report features from `.txt` files into a CSV. |
 | [explore_extracted_features.ipynb](./explore_extracted_features.ipynb) | Notebook for exploring the extracted data. |
+| [spectral_clustering.ipynb](./spectral_clustering.ipynb) | Spectral clustering of the extracted features, quality metrics, and remapping of representative samples. |
 | [sources/peinfo2.yara](./sources/peinfo2.yara) | YARA rules associated with the PE-report workflow. |
 | [requirements.txt](./requirements.txt) | Python dependencies for the notebook and clustering workflow. |
 
@@ -115,3 +116,21 @@ Open [explore_extracted_features.ipynb](./explore_extracted_features.ipynb)
 from the project root after creating `result/data2_features.csv`. Its first
 cell loads that path before preparing the exploratory plots and clustering
 analysis.
+
+## Spectral clustering
+
+[spectral_clustering.ipynb](./spectral_clustering.ipynb) is self-contained: it
+loads `result/data2_features.csv`, builds the feature matrix, and clusters the
+complete reports with landmark-based spectral clustering (k-means landmarks,
+self-tuning affinity, `sklearn.cluster.SpectralClustering`). A full run takes
+about one to three minutes and needs no packages beyond `requirements.txt`.
+
+- The configuration cell at the top sets the number of landmarks, the candidate
+  cluster counts, and `N_CLUSTERS` (`None` picks the count from the eigengap and
+  the stability across seeds).
+- Section 5 reports silhouette, Davies–Bouldin, Calinski–Harabasz and stability
+  (ARI) next to a k-means baseline.
+- Section 7 is the option block for representatives: `N_REPRESENTATIVES`,
+  `REPRESENTATIVE_METHOD` (`"central"` or `"diverse"`) and `RAW_REPORT_LINES`
+  control which samples are mapped back to the CSV rows and compared with the
+  initial dataset.
